@@ -1,8 +1,8 @@
 <?php
 
-const HOST = "localhost:3307";
+const HOST = "localhost";
 const USER = "root";
-const PASSWORD = "root";
+const PASSWORD = "";
 const DB = "database";
 CONST PORT = 3307;
 const ACCESS_TOKEN_SECRET = 'your_access_token_secret_key';
