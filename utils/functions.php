@@ -20,7 +20,7 @@ function decodeAccessToken(string $token): ?stdClass
 {
     try {
         return JWT::decode($token, new Firebase\JWT\Key(ACCESS_TOKEN_SECRET, 'HS256'));
-    } catch (Exception){
+    } catch (Exception) {
         return null;
     }
 }
@@ -39,15 +39,20 @@ function generateRefreshToken($userId): string
     return JWT::encode($payload, REFRESH_TOKEN_SECRET, 'HS256');
 }
 
+function clearTokens(): void
+{
+    setcookie("refresh_token", "", time() - REFRESH_TOKEN_EXPIRATION, "/", false, false);
+    setcookie("access_token", "", time() - ACCESS_TOKEN_EXPIRATION, "/", false, false);
+}
+
 function decodeRefreshToken(string $token): ?stdClass
 {
     try {
         return JWT::decode($token, new Firebase\JWT\Key(REFRESH_TOKEN_SECRET, 'HS256'));
-    } catch (Exception){
+    } catch (Exception) {
         return null;
     }
 }
-
 
 function validateRequiredFields(array $data, array $requiredFields): void
 {
@@ -59,3 +64,4 @@ function validateRequiredFields(array $data, array $requiredFields): void
         }
     }
 }
+

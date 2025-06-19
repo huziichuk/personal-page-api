@@ -34,6 +34,27 @@ class AuthController
 
         http_response_code(200);
         echo json_encode(["message" => "Logged in successfully"]);
+    }
 
+    public function isAuth(): void
+    {
+        authMiddleware();
+        http_response_code(200);
+        echo json_encode(["message" => "User is authenticated"]);
+    }
+
+    public function logout(): void
+    {
+        authMiddleware();
+
+        $tokenModel = new TokenModel($this->pdo);
+        $refreshToken = $_COOKIE["refresh_token"];
+        $tokenModel->delete($refreshToken);
+
+        setcookie("refresh_token", "", time() - 60800, "/", false, false);
+        setcookie("access_token", "", time() - 60800, "/", false, false);
+
+        http_response_code(200);
+        echo json_encode(["message" => "Logged out successfully"]);
     }
 }

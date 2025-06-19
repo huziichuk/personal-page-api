@@ -22,8 +22,10 @@ header('Content-Type: application/json');
 
 $router = new Router();
 
-require "./routers/indexRouter.php";
-require "./routers/authRouter.php";
+require_once "./middlewares/authMiddleware.php";
+
+require_once "./routers/indexRouter.php";
+require_once "./routers/authRouter.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
