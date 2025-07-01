@@ -26,7 +26,8 @@ class Router
     public function resolve($method, $uri): void
     {
         foreach ($this->routes[$method] as $route => $handler) {
-            $routeRegex = preg_replace('/\{[a-zA-Z_]+\}/', '(\d+)', $route);
+            $routeRegex = preg_replace('/\{[a-zA-Z_]+\}/', '([\w\-]+)', $route);
+
             $routeRegex = "~^" . $routeRegex . "$~";
 
             if (preg_match($routeRegex, $uri, $matches)) {
