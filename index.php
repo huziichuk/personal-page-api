@@ -1,6 +1,15 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header("Access-Control-Allow-Origin: http://localhost:5173");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+    header("Access-Control-Allow-Credentials: true");
+    http_response_code(200);
+    exit();
+}
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
@@ -13,10 +22,12 @@ require_once "./utils/functions.php";
 
 require_once "models/TokenModel.php";
 require_once "models/UserModel.php";
+require_once "models/PagesModel.php";
 
 require_once "Router.php";
 
 require_once "controllers/AuthController.php";
+require_once "controllers/PagesController.php";
 
 header('Content-Type: application/json');
 
@@ -26,6 +37,7 @@ require_once "./middlewares/authMiddleware.php";
 
 require_once "./routers/indexRouter.php";
 require_once "./routers/authRouter.php";
+require_once "./routers/pagesRouter.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
