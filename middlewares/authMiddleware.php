@@ -12,6 +12,14 @@ function authMiddleware(): void
         exit;
     }
 
+    $decodedRefreshToken = decodeRefreshToken($refreshToken);
+
+    if (!$decodedRefreshToken) {
+        http_response_code(401);
+        echo json_encode(['error' => 'No refresh token']);
+        exit;
+    }
+
     $accessToken = $_COOKIE['access_token'] ?? null;
 
     if ($accessToken) {
