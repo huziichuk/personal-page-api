@@ -23,11 +23,14 @@ require_once "./utils/functions.php";
 require_once "models/TokenModel.php";
 require_once "models/UserModel.php";
 require_once "models/PagesModel.php";
+require_once "models/FieldsModel.php";
+require_once "models/RepeatersModel.php";
 
 require_once "Router.php";
 
 require_once "controllers/AuthController.php";
 require_once "controllers/PagesController.php";
+require_once "controllers/FieldsController.php";
 
 header('Content-Type: application/json');
 
@@ -38,6 +41,7 @@ require_once "./middlewares/authMiddleware.php";
 require_once "./routers/indexRouter.php";
 require_once "./routers/authRouter.php";
 require_once "./routers/pagesRouter.php";
+require_once "./routers/fieldsRouter.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];

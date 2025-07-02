@@ -8,11 +8,27 @@ class FieldsModel {
         $this->pdo = $pdo;
     }
 
+    public function getAll(): array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `fields`");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getPageFields($page_id) : array
     {
         $sql = "SELECT * FROM `fields` WHERE `page_id` = :page_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':page_id', $page_id);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getFieldByKey(string $key) : array
+    {
+        $sql = "SELECT * FROM `fields` WHERE `field_key` = :key";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':key', $key);
         $stmt->execute();
         return $stmt->fetchAll();
     }

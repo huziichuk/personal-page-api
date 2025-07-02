@@ -11,6 +11,8 @@ class PagesModel
 
     public function get(string $slug): array
     {
+        $fieldsModel = new FieldsModel($this->pdo);
+        $repeatersModel = new RepeatersModel($this->pdo);
         $stmt = $this->pdo->prepare("SELECT id, title, slug FROM pages WHERE slug = :slug");
         $stmt->execute(['slug' => $slug]);
         $page = $stmt->fetch();
@@ -19,15 +21,12 @@ class PagesModel
             return [];
         }
 
-        $pageId = $page['id'];
+        $page_id = $page['id'];
 
-        $stmt = $this->pdo->prepare("SELECT id, field_key, value, type FROM fields WHERE page_id = :page_id ORDER BY id");
-        $stmt->execute(['page_id' => $pageId]);
-        $fields = $stmt->fetchAll();
 
-        $stmt = $this->pdo->prepare("SELECT id, repeater_key, sort_order FROM repeaters WHERE page_id = :page_id ORDER BY sort_order, id");
-        $stmt->execute(['page_id' => $pageId]);
-        $repeatersRaw = $stmt->fetchAll();
+        $fields = $fieldsModel->getPageFields($page_id);
+
+        $repeatersRaw = $repeatersModel->getPageRepeaters($page_id);
 
         $repeaterIds = array_column($repeatersRaw, 'id');
 
@@ -112,6 +111,7 @@ class PagesModel
                     'key' => $row['field_key'],
                     'value' => $row['value'],
                     'type' => $row['type'],
+                    'field_key' => $row['field_key'],
                 ];
             }
         }
@@ -188,6 +188,16 @@ class PagesModel
             'slug' => $data['slug'],
             'title' => $data['title']
         ]);
+    }
+
+    public function getById(int $id): array
+    {
+        $sql = "SELECT * FROM `pages` WHERE `id` = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'id' => $id
+        ]);
+        return $stmt->fetch();
     }
 
     public function delete(string $slug): void
