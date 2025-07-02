@@ -3,9 +3,11 @@
 class FieldsModel {
     private pdo $pdo;
 
+
     public function __construct(pdo $pdo)
     {
         $this->pdo = $pdo;
+
     }
 
     public function getAll(): array
@@ -46,14 +48,15 @@ class FieldsModel {
         ]);
     }
 
-    public function updateField(array $data): void
+    public function updateField(int $id,array $data): void
     {
-        $sql = "UPDATE `fields` SET `value` = :value, `type` = :type, `field_key` = :field_key WHERE id = :id";
+        $sql = "UPDATE `fields` SET `value` = :value, title= :title ,`type` = :type, `field_key` = :field_key WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             'value' => $data['value'],
             'type' => $data['type'],
-            'id' => $data['id'],
+            'title' => $data['title'],
+            'id' => $id,
             'field_key' => $data['field_key'],
         ]);
     }

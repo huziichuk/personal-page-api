@@ -2,17 +2,19 @@
 
 class PagesModel
 {
-    private pdo $pdo;
+    private PDO $pdo;
+    private FieldsModel $fieldsModel;
+    private RepeatersModel $repeatersModel;
 
-    public function __construct(pdo $pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
+        $this->fieldsModel = new FieldsModel($pdo);
+        $this->repeatersModel = new RepeatersModel($pdo);
     }
 
     public function get(string $slug): array
     {
-        $fieldsModel = new FieldsModel($this->pdo);
-        $repeatersModel = new RepeatersModel($this->pdo);
         $stmt = $this->pdo->prepare("SELECT id, title, slug FROM pages WHERE slug = :slug");
         $stmt->execute(['slug' => $slug]);
         $page = $stmt->fetch();
@@ -24,9 +26,9 @@ class PagesModel
         $page_id = $page['id'];
 
 
-        $fields = $fieldsModel->getPageFields($page_id);
+        $fields = $this->fieldsModel->getPageFields($page_id);
 
-        $repeatersRaw = $repeatersModel->getPageRepeaters($page_id);
+        $repeatersRaw = $this->repeatersModel->getPageRepeaters($page_id);
 
         $repeaterIds = array_column($repeatersRaw, 'id');
 
@@ -85,6 +87,7 @@ class PagesModel
             f.id AS field_id,
             f.field_key,
             f.value,
+            f.title,
             f.type
         FROM pages p
         LEFT JOIN fields f ON f.page_id = p.id
@@ -111,6 +114,7 @@ class PagesModel
                     'key' => $row['field_key'],
                     'value' => $row['value'],
                     'type' => $row['type'],
+                    'title' => $row['title'],
                     'field_key' => $row['field_key'],
                 ];
             }

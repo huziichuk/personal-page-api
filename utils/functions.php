@@ -65,3 +65,13 @@ function validateRequiredFields(array $data, array $requiredFields): void
     }
 }
 
+function typeValidation(string $type): void
+{
+    $allowedTypes = ["string", "int", "repeater", "link"];
+    if (!in_array($type, $allowedTypes)) {
+        http_response_code(400);
+        echo json_encode(array("message" => "Invalid type"));
+        exit;
+    }
+}
+

@@ -57,6 +57,39 @@ class FieldsController
         http_response_code(200);
         echo json_encode(["message" => "Field created."]);
     }
+    public function update($id, $data): void
+    {
+        authMiddleware();
+        validateRequiredFields($data, ["title", "title", "type", "field_key"]);
+        $data["type"] = strtolower($data["type"]);
+        typeValidation($data["type"]);
+        $fieldsModel = new FieldsModel($this->pdo);
+        $field = $fieldsModel->getFieldById($id);
+        if (empty($field)) {
+            http_response_code(404);
+            echo json_encode(["message" => "Field not found."]);
+            exit();
+        }
 
+        $fieldsModel->updateField($id, $data);
+        http_response_code(200);
+        echo json_encode(["message" => "Field updated."]);
+    }
 
+    public function delete($id): void
+    {
+        authMiddleware();
+        $fieldsModel = new FieldsModel($this->pdo);
+        $existField = $fieldsModel->getFieldByKey($id);
+        if (empty($existField)) {
+            http_response_code(404);
+            echo json_encode(["message" => "Field not found."]);
+            exit();
+        }
+        $sql = "DELETE FROM fields WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+        http_response_code(200);
+    }
 }
