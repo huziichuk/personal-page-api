@@ -35,13 +35,14 @@ class PagesModel
         $repeaterFields = [];
         if (count($repeaterIds) > 0) {
             $in  = str_repeat('?,', count($repeaterIds) - 1) . '?';
-            $stmt = $this->pdo->prepare("SELECT id, repeater_id, field_key, value, type, sort_order FROM repeater_fields WHERE repeater_id IN ($in) ORDER BY sort_order, id");
+            $stmt = $this->pdo->prepare("SELECT id, repeater_id, field_key, value, type,title, sort_order FROM repeater_fields WHERE repeater_id IN ($in) ORDER BY sort_order, id");
             $stmt->execute($repeaterIds);
             $fieldsRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($fieldsRaw as $f) {
                 $repeaterFields[$f['repeater_id']][] = [
                     'id' => $f['id'],
+                    'title' => $f['title'],
                     'key' => $f['field_key'],
                     'value' => $f['value'],
                     'type' => $f['type'],
@@ -55,6 +56,8 @@ class PagesModel
             $repeaters[] = [
                 'id' => $r['id'],
                 'key' => $r['repeater_key'],
+                'title' => $r['title'],
+                'page_id' => $r['page_id'],
                 'sort_order' => $r['sort_order'],
                 'fields' => $repeaterFields[$r['id']] ?? [],
             ];
@@ -111,7 +114,6 @@ class PagesModel
             if ($row['field_id']) {
                 $pages[$pageId]['fields'][] = [
                     'id' => $row['field_id'],
-                    'key' => $row['field_key'],
                     'value' => $row['value'],
                     'type' => $row['type'],
                     'title' => $row['title'],
@@ -136,6 +138,8 @@ class PagesModel
                 $pages[$r['page_id']]['repeaters'][$r['id']] = [
                     'id' => $r['id'],
                     'key' => $r['repeater_key'],
+                    'page_id' => $r['page_id'],
+                    'title' => $r['title'],
                     'sort_order' => $r['sort_order'],
                     'fields' => [],
                 ];

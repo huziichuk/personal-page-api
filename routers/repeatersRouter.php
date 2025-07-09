@@ -18,7 +18,7 @@ $router->post("/repeaters", function() use ($pdo) {
     $controller->store($data);
 });
 
-$router->put("/repeaters", function($id) use ($pdo) {
+$router->put("/repeaters/{id}", function($id) use ($pdo) {
     $data = json_decode(file_get_contents('php://input'), true) ?? [];
     $controller = new RepeatersController($pdo);
     $controller->update($id, $data);

@@ -24,24 +24,26 @@ class RepeaterFieldsModel {
         return $stmt->fetch();
     }
 
-    public function create(array $data): void
+    public function create(array $data): int
     {
-        $sql = "INSERT INTO repeater_fields (repeater_id, field_key, value, type, sort_order) VALUES (:repeater_id, :field_key, :value, :type, :sort_order)";
+        $sql = "INSERT INTO repeater_fields (title,repeater_id, field_key, value, type) VALUES (:title,:repeater_id, :field_key, :value, :type)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
+            'title' => $data['title'],
             'repeater_id' => $data['repeater_id'],
             'field_key' => $data['field_key'],
             'value' => $data['value'],
             'type' => $data['type'],
-            'sort_order' => $data['sort_order']
         ]);
+        return $this->pdo->lastInsertId();
     }
 
     public function update(int $id,array $data): void
     {
-        $sql = "UPDATE repeater_fields SET field_key=:field_key, value=:value, type=:type, sort_order=:sort_order WHERE id=:id";
+        $sql = "UPDATE repeater_fields SET title=:title,field_key=:field_key, value=:value, type=:type, sort_order=:sort_order WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
+            'title' => $data['title'],
             'field_key' => $data['field_key'],
             'value' => $data['value'],
             'type' => $data['type'],

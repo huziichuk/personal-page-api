@@ -22,8 +22,12 @@ class RepeatersController
         authMiddleware();
         validateRequiredFields($data, ["page_id", "repeater_key"]);
         $repeatersModel = new RepeatersModel($this->pdo);
-        $repeatersModel->create($data);
+        $insertedId = $repeatersModel->create($data);
         http_response_code(200);
+        echo json_encode([
+            "message"=> "Repeater created successfully.",
+            "id"=> $insertedId
+        ]);
     }
     public function show(int $id): void
     {

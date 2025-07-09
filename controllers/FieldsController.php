@@ -53,9 +53,9 @@ class FieldsController
             exit();
         }
 
-        $fieldsModel->createField($data);
+        $newId = $fieldsModel->createField($data);
         http_response_code(200);
-        echo json_encode(["message" => "Field created."]);
+        echo json_encode(["message" => "Field created.", "id" => $newId]);
     }
     public function update($id, $data): void
     {

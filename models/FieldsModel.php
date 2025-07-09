@@ -35,7 +35,7 @@ class FieldsModel {
         return $stmt->fetchAll();
     }
 
-    public function createField(array $data): void
+    public function createField(array $data): int
     {
         $sql = "INSERT INTO `fields` (page_id, field_key, value, type, title) VALUES (:page_id, :field_key, :value, :type, :title)";
         $stmt = $this->pdo->prepare($sql);
@@ -46,6 +46,7 @@ class FieldsModel {
             'type' => $data['type'],
             'title' => $data['title']
         ]);
+        return $this->pdo->lastInsertId();
     }
 
     public function updateField(int $id,array $data): void
@@ -64,7 +65,9 @@ class FieldsModel {
     {
         $sql = "DELETE FROM `fields` WHERE `id` = :id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([
+            'id' => $id,
+        ]);
     }
 
     public function getFieldById($id) : array

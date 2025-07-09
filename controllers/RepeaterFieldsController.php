@@ -28,15 +28,19 @@ class RepeaterFieldsController
     public function store(array $data): void
     {
         authMiddleware();
-        validateRequiredFields($data, ["repeater_id", "field_key", "value", "type"]);
+        validateRequiredFields($data, ["title","repeater_id", "field_key", "value", "type"]);
         $data["type"] = strtolower($data["type"]);
         typeValidation($data["type"]);
+        $repeaterFieldsModel = new RepeaterFieldsModel($this->pdo);
+        $id = $repeaterFieldsModel->create($data);
+        http_response_code(200);
+        echo json_encode(["message" => "Repeater field created.", "id" => $id]);
     }
 
     public function update(int $id,array $data): void
     {
         authMiddleware();
-        validateRequiredFields($data, ["repeater_id", "field_key", "value", "type"]);
+        validateRequiredFields($data, ["title", "field_key", "value", "type"]);
         $data["type"] = strtolower($data["type"]);
         typeValidation($data["type"]);
         $repeaterFieldsModel = new RepeaterFieldsModel($this->pdo);
