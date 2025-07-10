@@ -20,7 +20,7 @@ class RepeatersController
     public function store(array $data): void
     {
         authMiddleware();
-        validateRequiredFields($data, ["page_id", "repeater_key"]);
+        validateRequiredFields($data, ["page_id", "repeater_key", "title"]);
         $repeatersModel = new RepeatersModel($this->pdo);
         $insertedId = $repeatersModel->create($data);
         http_response_code(200);

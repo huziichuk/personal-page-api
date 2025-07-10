@@ -2,3 +2,4 @@
 .idea
 .gitattributes
 vendor/
+.config.php
